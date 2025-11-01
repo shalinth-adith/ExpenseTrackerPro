@@ -9,15 +9,45 @@ import SwiftUI
 
 struct ContentView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack{
+            VStack{
+                BalanceCardView(balance: 8500, spent :1500)
+                
+                HStack{
+                      Text("Expenses")
+                      Spacer()
+                      Button(action: { }) {
+                          Image(systemName: "magnifyingglass")
+                      }
+                  }
+
+                List{
+                    
+                }
+            }
+            .navigationTitle(Text("Expense Tracker"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    EditButton()
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    HStack(spacing: 16) {
+                        Button(action: { }) {
+                            Image(systemName: "plus")
+                        }
+                        
+                        Button(action: { }) {
+                            Image(systemName: "gearshape")
+                        }
+                    }
+                }
+            }
         }
-        .padding()
     }
 }
+
 
 #Preview {
     ContentView()
