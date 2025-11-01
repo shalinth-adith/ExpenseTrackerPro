@@ -12,6 +12,7 @@ struct ContentView: View {
     @Query(sort: \Expense.date,order:.reverse) private var expenses:[Expense]
     @Query private var settings: [AppSettings]
     private var filteredExpenses: [Expense]{
+        
         if let category = selectedCategory{
             return expenses.filter{
                 $0.category == category
