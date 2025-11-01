@@ -4,7 +4,7 @@
 //
 //  Created by shalinth adithyan on 01/11/25.
 //
-
+import SwiftData
 import SwiftUI
 
 struct AddExpenseView: View {
@@ -12,6 +12,9 @@ struct AddExpenseView: View {
       @State private var selectedCategory: Category = .Food
       @State private var date: Date = Date()
       @State private var notes: String = ""
+    
+    @Environment(\.modelContext)private var modelContext
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         NavigationStack{
@@ -47,16 +50,31 @@ struct AddExpenseView: View {
             .toolbar {
                   ToolbarItem(placement: .topBarLeading) {
                       Button("Cancel") {
+                          dismiss()
                       }
                   }
 
                   ToolbarItem(placement: .topBarTrailing) {
                       Button("Save") {
+                          saveExpense()
                       }
                   }
               }
 
         }
+    }
+    private func saveExpense() {
+        guard let amountDecimal = Decimal(string: amount),amountDecimal > 0 else {
+            return
+        }
+        let newExpense = Expense(
+            amount: amountDecimal,
+            category: selectedCategory.rawValue,
+            date: date,
+            notes: notes.isEmpty ? nil : notes
+        )
+        modelContext.insert(newExpense)
+        dismiss()
     }
 }
 

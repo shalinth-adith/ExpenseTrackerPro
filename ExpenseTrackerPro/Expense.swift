@@ -16,7 +16,7 @@ class Expense {
     var notes: String?
     var createdAt: Date
     
-    init(id: UUID = UUID(), amount: Decimal, category: String, date: Date, notes: String, createdat: Date = Date()) {
+    init(id: UUID = UUID(), amount: Decimal, category: String, date: Date, notes: String? = nil , createdat: Date = Date()) {
         self.id = id
         self.amount = amount
         self.category = category

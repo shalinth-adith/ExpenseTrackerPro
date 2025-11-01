@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var showAddExpense = false
     var body: some View {
         NavigationStack{
             VStack{
@@ -34,7 +35,7 @@ struct ContentView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 16) {
-                        Button(action: { }) {
+                        Button(action: { showAddExpense = true}) {
                             Image(systemName: "plus")
                         }
                         
