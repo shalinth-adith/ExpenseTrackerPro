@@ -10,11 +10,11 @@ import Foundation
 
 @Model
 class AppSettings {
-    var startingBalance : Double
-    var hasCompletedOnbarding: Bool
+    var startingBalance : Decimal
+    var hasCompletedOnboarding: Bool
     
-    init (startingBalance: Double, hasCompletedOnbarding: Bool) {
+    init (startingBalance: Decimal, hasCompletedOnboarding: Bool) {
         self.startingBalance = startingBalance
-        self.hasCompletedOnbarding = hasCompletedOnbarding
+        self.hasCompletedOnboarding = hasCompletedOnboarding
     }
 }
