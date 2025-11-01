@@ -4,7 +4,7 @@
 //
 //  Created by shalinth adithyan on 01/11/25.
 //
-
+import SwiftData
 import SwiftUI
 
 @main
@@ -13,5 +13,8 @@ struct ExpenseTrackerProApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: [Expense.self,AppSettings.self])
+
     }
+
 }

@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+
+enum Category {
+    case Food, Transport , Shopping , Bills, Other
+    
+}
