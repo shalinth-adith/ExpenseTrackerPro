@@ -10,13 +10,13 @@ import Foundation
 @Model
 class Expense {
     var id : UUID
-    var amount: Double
+    var amount: Decimal
     var category : String
     var date: Date
-    var notes: String
+    var notes: String?
     var createdAt: Date
     
-    init(id: UUID = UUID(), amount: Double, category: String, date: Date, notes: String, createdat: Date = Date()) {
+    init(id: UUID = UUID(), amount: Decimal, category: String, date: Date, notes: String, createdat: Date = Date()) {
         self.id = id
         self.amount = amount
         self.category = category

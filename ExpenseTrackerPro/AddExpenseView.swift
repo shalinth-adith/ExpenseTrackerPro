@@ -8,8 +8,55 @@
 import SwiftUI
 
 struct AddExpenseView: View {
+    @State private var amount: String = ""
+      @State private var selectedCategory: Category = .Food
+      @State private var date: Date = Date()
+      @State private var notes: String = ""
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack{
+            Form{
+                Section(header : Text("Amount")){
+                    HStack{
+                        Text("₹")
+                            .foregroundStyle(Color.gray)
+                        TextField("0", text: $amount)
+                            .keyboardType(.decimalPad)
+                    }
+                }
+                Section(header: Text("Category")) {
+                      Picker("Category", selection: $selectedCategory) {
+                          ForEach(Category.allCases, id: \.self) { category in
+                              Text(category.rawValue).tag(category)
+                          }
+                      }
+                  }
+
+                Section(header : Text("Date")){
+                    DatePicker("Date",selection: $date)
+                }
+                Section(header : Text("Notes")){
+                    TextEditor(text: $notes)
+                }
+                
+                
+                
+            }
+            .navigationTitle("Add Expense")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                  ToolbarItem(placement: .topBarLeading) {
+                      Button("Cancel") {
+                      }
+                  }
+
+                  ToolbarItem(placement: .topBarTrailing) {
+                      Button("Save") {
+                      }
+                  }
+              }
+
+        }
     }
 }
 

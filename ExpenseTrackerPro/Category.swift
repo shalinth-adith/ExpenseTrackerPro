@@ -8,7 +8,7 @@
 import Foundation
 
 
-enum Category {
-    case Food, Transport , Shopping , Bills, Other
-    
-}
+
+  enum Category: String, CaseIterable {
+      case Food, Transport, Shopping, Bills, Other
+  }
