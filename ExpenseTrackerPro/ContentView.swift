@@ -11,9 +11,18 @@ struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Expense.date,order:.reverse) private var expenses:[Expense]
     @Query private var settings: [AppSettings]
+    private var filteredExpenses: [Expense]{
+        if let category = selectedCategory{
+            return expenses.filter{
+                $0.category == category
+            }
+        }
+        return expenses
+        
+    }
     private var hasCompletedOnboarding: Bool {
-          settings.first?.hasCompletedOnboarding ?? false
-      }
+        settings.first?.hasCompletedOnboarding ?? false
+    }
     private var totalSpent:Decimal {
         expenses.reduce(0){
             $0+$1.amount
@@ -22,93 +31,107 @@ struct ContentView: View {
     
     
     private var startingBalance: Decimal {
-          settings.first?.startingBalance ?? 10000
-      }
+        settings.first?.startingBalance ?? 10000
+    }
     
     private var currentBalance: Decimal {
         startingBalance - totalSpent
     }
-    private var filteredExpenses: [Expense]{
-        if let category = selectedCategory{
-            return expenses.filter{
-                $0.category == category
-            }
-        }
-        return expenses
-
-    }
+    
     @State private var showSettings = false
     @State private var showAddExpense = false
     @State private var selectedCategory:String? = nil
-
+    
     @State private var showFilter = false
-    var body: some View {
-        if hasCompletedOnboarding {
-            NavigationStack{
-                VStack{
-                    BalanceCardView(balance: currentBalance, spent: totalSpent)
-                    
-                    HStack{
-                        if let category = selectedCategory {
-                                  Text("Expenses - \(category)")
-                              } else {
-                                  Text("Expenses")
-                              }
 
-                        Spacer()
-                        Button(action: {showFilter = true }) {
-                            Image(systemName: "magnifyingglass").sheet(isPresented: $showFilter) {
-                                FilterView(selectedCategory: $selectedCategory)
+        var body: some View {
+            if hasCompletedOnboarding {
+                NavigationStack {
+                    VStack {
+                        BalanceCardView(balance: currentBalance, spent: totalSpent)
+
+                        HStack {
+                            if let category = selectedCategory {
+                                Text("Expenses - \(category)")
+                            } else {
+                                Text("Expenses")
+                            }
+
+                            Spacer()
+                            Button(action: { showFilter = true }) {
+                                Image(systemName: "magnifyingglass")
                             }
                         }
-                    }
-                    
-                    List{
-                        ForEach(filteredExpenses){expense in
-                            ExpenseRowView(expense:expense)
-                        }
-                        .onDelete(perform: deleteExpenses)
-                    }
-                }
-                .navigationTitle(Text("Expense Tracker"))
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        EditButton()
-                    }
-                    
-                    ToolbarItem(placement: .topBarTrailing) {
-                        HStack(spacing: 16) {
-                            Button(action: { showAddExpense = true}) {
-                                Image(systemName: "plus").sheet(isPresented: $showAddExpense) {
-                                    AddExpenseView()
+
+                        List {
+                            ForEach(filteredExpenses) { expense in
+                                ExpenseRowView(expense: expense)
+                            }
+                            .onDelete(perform: deleteExpenses)
+
+                            Section {
+                                HStack {
+                                    Text("Total Expenses:")
+                                        .fontWeight(.bold)
+                                    Spacer()
+                                    Text("₹\(formatCurrency(totalSpent))")
+                                        .fontWeight(.bold)
+                                        .foregroundColor(.red)
                                 }
                             }
-                            
-                            Button(action: {showSettings = true }) {
-                                Image(systemName: "gearshape")
+                        }
+                    }
+                    .navigationTitle(Text("Expense Tracker"))
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .topBarLeading) {
+                            EditButton()
+                        }
+
+                        ToolbarItem(placement: .topBarTrailing) {
+                            HStack(spacing: 16) {
+                                Button(action: { showAddExpense = true }) {
+                                    Image(systemName: "plus")
+                                }
+
+                                Button(action: { showSettings = true }) {
+                                    Image(systemName: "gearshape")
+                                }
                             }
                         }
                     }
+                    .sheet(isPresented: $showAddExpense) {
+                        AddExpenseView()
+                    }
+                    .sheet(isPresented: $showSettings) {
+                        SettingsView()
+                    }
+                    .sheet(isPresented: $showFilter) {
+                        FilterView(selectedCategory: $selectedCategory)
+                    }
                 }
+            } else {
+                OnboardingView()
             }
-        }else {
-           
-            OnboardingView()
+        }
+
+
+    private func deleteExpenses(at offsets: IndexSet) {
+        for index in offsets {
+            let expense = filteredExpenses[index]
+            modelContext.delete(expense)
         }
     }
 
-        
-        
-        private func deleteExpenses(at offsets: IndexSet) {
-            for index in offsets {
-                let expense = expenses[index]
-                modelContext.delete(expense)
-            }
-        }
+    private func formatCurrency(_ amount: Decimal) -> String {
+        let number = NSDecimalNumber(decimal: amount)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.locale = Locale(identifier: "en_IN")
+        formatter.maximumFractionDigits = 0
+        return formatter.string(from: number) ?? "0"
     }
-
-
+}
 
 #Preview {
     ContentView()

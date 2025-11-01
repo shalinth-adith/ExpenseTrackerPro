@@ -10,6 +10,9 @@ import SwiftUI
 struct OnboardingView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var startingBalance: String = ""
+    @State private var showingAlert = false
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
     
     var body: some View {
         VStack{
@@ -59,21 +62,33 @@ struct OnboardingView: View {
                       }
                   }
 
-                  private func saveAndContinue() {
-                      guard let balanceDecimal = Decimal(string: startingBalance),
-              balanceDecimal > 0 else {
-                          return
-                      }
-
-                      let settings = AppSettings(
-                          startingBalance: balanceDecimal,
-                          hasCompletedOnboarding: true
-                      )
-
-                      // Save to SwiftData
-                      modelContext.insert(settings)
-                  }
+    private func saveAndContinue() {
+              guard !startingBalance.isEmpty else {
+                  showAlert(title: "Invalid Balance", message: "Please enter a starting balance")
+                  return
               }
+
+              guard let balanceDecimal = Decimal(string: startingBalance),
+      balanceDecimal > 0 else {
+                  showAlert(title: "Invalid Balance", message: "Please enter a valid amount greater than 0")
+                  return
+              }
+
+              let settings = AppSettings(
+                  startingBalance: balanceDecimal,
+                  hasCompletedOnboarding: true
+              )
+
+              modelContext.insert(settings)
+          }
+
+          private func showAlert(title: String, message: String) {
+              alertTitle = title
+              alertMessage = message
+              showingAlert = true
+          }
+      }
+
 
 
 #Preview {

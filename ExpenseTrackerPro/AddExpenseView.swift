@@ -12,9 +12,19 @@ struct AddExpenseView: View {
       @State private var selectedCategory: Category = .Food
       @State private var date: Date = Date()
       @State private var notes: String = ""
+    @State private var showingAlert = false
+      @State private var alertTitle = ""
+      @State private var alertMessage = ""
     
     @Environment(\.modelContext)private var modelContext
     @Environment(\.dismiss) private var dismiss
+    
+    private func showAlert(title: String, message: String) {
+          alertTitle = title
+          alertMessage = message
+          showingAlert = true
+      }
+
     
     var body: some View {
         NavigationStack{
@@ -60,22 +70,36 @@ struct AddExpenseView: View {
                       }
                   }
               }
+            .alert(alertTitle, isPresented: $showingAlert) {
+                  Button("OK", role: .cancel) { }
+              } message: {
+                  Text(alertMessage)
+              }
 
         }
     }
     private func saveExpense() {
-        guard let amountDecimal = Decimal(string: amount),amountDecimal > 0 else {
-            return
-        }
-        let newExpense = Expense(
-            amount: amountDecimal,
-            category: selectedCategory.rawValue,
-            date: date,
-            notes: notes.isEmpty ? nil : notes
-        )
-        modelContext.insert(newExpense)
-        dismiss()
-    }
+          guard !amount.isEmpty else {
+              showAlert(title: "Invalid Amount", message: "Please enter an amount")
+              return
+          }
+
+          guard let amountDecimal = Decimal(string: amount), amountDecimal > 0 else {
+              showAlert(title: "Invalid Amount", message: "Please enter a valid amount greater than 0")
+              return
+          }
+
+          let newExpense = Expense(
+              amount: amountDecimal,
+              category: selectedCategory.rawValue,
+              date: date,
+              notes: notes.isEmpty ? nil : notes
+          )
+
+          modelContext.insert(newExpense)
+          dismiss()
+      }
+
 }
 
 #Preview {
