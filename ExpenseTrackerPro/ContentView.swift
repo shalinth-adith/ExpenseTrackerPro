@@ -20,6 +20,7 @@ struct ContentView: View {
         }
     }
     
+    
     private var startingBalance: Decimal {
           settings.first?.startingBalance ?? 10000
       }
@@ -27,8 +28,20 @@ struct ContentView: View {
     private var currentBalance: Decimal {
         startingBalance - totalSpent
     }
+    private var filteredExpenses: [Expense]{
+        if let category = selectedCategory{
+            return expenses.filter{
+                $0.category == category
+            }
+        }
+        return expenses
+
+    }
     @State private var showSettings = false
     @State private var showAddExpense = false
+    @State private var selectedCategory:String? = nil
+
+    @State private var showFilter = false
     var body: some View {
         if hasCompletedOnboarding {
             NavigationStack{
@@ -36,16 +49,22 @@ struct ContentView: View {
                     BalanceCardView(balance: currentBalance, spent: totalSpent)
                     
                     HStack{
-                        Text("Expenses")
-                            .bold()
+                        if let category = selectedCategory {
+                                  Text("Expenses - \(category)")
+                              } else {
+                                  Text("Expenses")
+                              }
+
                         Spacer()
-                        Button(action: { }) {
-                            Image(systemName: "magnifyingglass")
+                        Button(action: {showFilter = true }) {
+                            Image(systemName: "magnifyingglass").sheet(isPresented: $showFilter) {
+                                FilterView(selectedCategory: $selectedCategory)
+                            }
                         }
                     }
                     
                     List{
-                        ForEach(expenses){expense in
+                        ForEach(filteredExpenses){expense in
                             ExpenseRowView(expense:expense)
                         }
                         .onDelete(perform: deleteExpenses)

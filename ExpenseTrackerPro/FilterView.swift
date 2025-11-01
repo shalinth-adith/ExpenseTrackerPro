@@ -6,13 +6,40 @@
 //
 
 import SwiftUI
-
+import SwiftData
 struct FilterView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
+      @Binding var selectedCategory: String?
+      @Environment(\.dismiss) private var dismiss
+
+      var body: some View {
+          NavigationStack {
+              List {
+                  Button("All") {
+                      selectedCategory = nil
+                      dismiss()
+                  }
+
+                  ForEach(Category.allCases, id: \.self) { category in
+                      Button(category.rawValue) {
+                          selectedCategory = category.rawValue
+                          dismiss()
+                      }
+                  }
+              }
+              .navigationTitle("Filter by Category")
+              .toolbar {
+                  ToolbarItem(placement: .topBarTrailing) {
+                      Button("Cancel") {
+                          dismiss()
+                      }
+                  }
+              }
+          }
+      }
+  }
+
+
 
 #Preview {
-    FilterView()
+    FilterView(selectedCategory: .constant(nil))
 }
