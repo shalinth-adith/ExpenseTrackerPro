@@ -5,42 +5,126 @@
 //  Created by shalinth adithyan on 01/11/25.
 //
 
+
 import SwiftUI
 
 struct ExpenseRowView: View {
-    var expense:Expense
+    var expense: Expense
+
     var body: some View {
-        HStack{
-            VStack(alignment: .leading, spacing:6){
-                Text(expense.category)
-                    .font(.headline)
-                    .foregroundStyle(.primary)
-                Text(formatDate(expense.date))
-                    .font(.caption)
-                    .foregroundStyle(.gray)
-                if let notes = expense.notes, !notes.isEmpty {
-                    Text(notes)
+        HStack(spacing: 0) {
+            Rectangle()
+                .fill(expense.transactionType == .income ? Color.green : Color.red)
+                .frame(width: 4)
+                .cornerRadius(2)
+
+            HStack(spacing: 12) {
+                categoryIcon
+                    .frame(width: 45, height: 45)
+                    .background(
+                        Circle()
+                            .fill(categoryColor.opacity(0.15))
+                    )
+
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Text(expense.category)
+                            .font(.headline)
+                            .foregroundStyle(.primary)
+
+                        Text(expense.transactionType == .income ? "Income" : "Expense")
+                            .font(.caption2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 3)
+                            .background(
+                                Capsule()
+                                    .fill(expense.transactionType == .income ? Color.green :
+Color.red)
+                            )
+                    }
+
+                    Text(formatDate(expense.date))
                         .font(.caption)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
+                        .foregroundStyle(.gray)
+
+                    if let notes = expense.notes, !notes.isEmpty {
+                        Text(notes)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                    }
                 }
-                
-                
+
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text("\(expense.transactionType == .income ? "+" :"-")₹\(formatCurrency(expense.amount))")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                        .foregroundColor(expense.transactionType == .income ? .green : .red)
+
+                    Image(systemName: expense.transactionType == .income ? "arrow.up.circle.fill"
+ : "arrow.down.circle.fill")
+                        .font(.caption)
+                        .foregroundColor(expense.transactionType == .income ? .green.opacity(0.7)
+ : .red.opacity(0.7))
+                }
             }
-            Spacer()
-            Text("-₹\(formatCurrency(expense.amount))")
-                .font(.headline)
-                .foregroundColor(.red)
+            .padding(.leading, 12)
+            .padding(.vertical, 12)
         }
-        .padding()
-        
+        .background(Color(.systemBackground))
     }
+
+    private var categoryIcon: some View {
+        Image(systemName: getCategoryIcon())
+            .font(.system(size: 22))
+            .foregroundColor(categoryColor)
+    }
+
+    // MARK: - Category Color
+    private var categoryColor: Color {
+        switch expense.category {
+        case "Food":
+            return .orange
+        case "Transport":
+            return .blue
+        case "Shopping":
+            return .purple
+        case "Bills":
+            return .red
+        default:
+            return .gray
+        }
+    }
+
+    // MARK: - Get Category Icon
+    private func getCategoryIcon() -> String {
+        switch expense.category {
+        case "Food":
+            return "fork.knife"
+        case "Transport":
+            return "car.fill"
+        case "Shopping":
+            return "cart.fill"
+        case "Bills":
+            return "doc.text.fill"
+        default:
+            return "star.fill"
+        }
+    }
+
+    // MARK: - Format Date
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         return formatter.string(from: date)
     }
+
+    // MARK: - Format Currency
     private func formatCurrency(_ amount: Decimal) -> String {
         let number = NSDecimalNumber(decimal: amount)
         let formatter = NumberFormatter()
@@ -51,18 +135,25 @@ struct ExpenseRowView: View {
     }
 }
 
-
-
-
-
-
 #Preview {
-    let sampleExpense = Expense(
-          amount: Decimal(500),
-          category: "Food",
-          date: Date(),
-          notes: "Lunch at restaurant"
-      )
-    return ExpenseRowView(expense: sampleExpense)
+    VStack(spacing: 10) {
+        // Expense example
+        ExpenseRowView(expense: Expense(
+            amount: Decimal(500),
+            category: "Food",
+            date: Date(),
+            notes: "Lunch at restaurant",
+            type: .expense
+        ))
 
+        // Income example
+        ExpenseRowView(expense: Expense(
+            amount: Decimal(50000),
+            category: "Other",
+            date: Date(),
+            notes: "Monthly salary",
+            type: .income
+        ))
+    }
 }
+
