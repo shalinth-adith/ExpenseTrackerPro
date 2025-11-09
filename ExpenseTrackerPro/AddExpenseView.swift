@@ -9,7 +9,8 @@ import SwiftUI
 
 struct AddExpenseView: View {
     @State private var amount: String = ""
-      @State private var selectedCategory: Category = .Food
+    @State private var transactionType: TransactionType = .expense
+    @State private var selectedCategory: Category = .Food
       @State private var date: Date = Date()
       @State private var notes: String = ""
     @State private var showingAlert = false
@@ -29,33 +30,40 @@ struct AddExpenseView: View {
     var body: some View {
         NavigationStack{
             Form{
-                Section(header : Text("Amount")){
-                    HStack{
-                        Text("₹")
-                            .foregroundStyle(Color.gray)
-                        TextField("0", text: $amount)
-                            .keyboardType(.decimalPad)
+                Section{
+                    Picker("Type",selection: $transactionType){
+                        Text("Expense").tag(TransactionType.expense)
+                        Text("Income").tag(TransactionType.income)
                     }
+                    .pickerStyle(.segmented)
                 }
-                Section(header: Text("Category")) {
-                      Picker("Category", selection: $selectedCategory) {
-                          ForEach(Category.allCases, id: \.self) { category in
-                              Text(category.rawValue).tag(category)
-                          }
-                      }
-                  }
+                Section(header: Text("Amount")) {
+                         HStack {
+                             Text("₹")
+                                 .foregroundStyle(Color.gray)
+                             TextField("0", text: $amount)
+                                 .keyboardType(.decimalPad)
+                         }
+                     }
 
-                Section(header : Text("Date")){
-                    DatePicker("Date",selection: $date)
-                }
-                Section(header : Text("Notes")){
-                    TextEditor(text: $notes)
-                }
-                
-                
-                
+                     Section(header: Text("Category")) {
+                         Picker("Category", selection: $selectedCategory) {
+                             ForEach(Category.allCases, id: \.self) { category in
+                                 Text(category.rawValue).tag(category)
+                             }
+                         }
+                     }
+
+                     Section(header: Text("Date")) {
+                         DatePicker("Date", selection: $date)
+                     }
+
+                     Section(header: Text("Notes")) {
+                         TextEditor(text: $notes)
+                     }
+
             }
-            .navigationTitle("Add Expense")
+            .navigationTitle(transactionType == .expense ? "Add Expense" : "Add Income")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                   ToolbarItem(placement: .topBarLeading) {
@@ -93,7 +101,8 @@ struct AddExpenseView: View {
               amount: amountDecimal,
               category: selectedCategory.rawValue,
               date: date,
-              notes: notes.isEmpty ? nil : notes
+              notes: notes.isEmpty ? nil : notes,
+              type : transactionType
           )
 
           modelContext.insert(newExpense)

@@ -105,15 +105,15 @@ This project is available for personal and educational use.
 
 ## Contact
 
-Shalinth Adithyan - [Your LinkedIn](https://www.linkedin.com/in/yourprofile)
+Shalinth Adithyan - https://www.linkedin.com/in/shalinth-adithyan/
 
-Project Link: [https://github.com/yourusername/ExpenseTrackerPro](https://github.com/yourusername/ExpenseTrackerPro)
+Project Link: https://github.com/shalinth-adith/ExpenseTrackerPro
 
 ## Acknowledgments
 
 - Built with SwiftUI and SwiftData
 - Inspired by modern personal finance apps
-- Icons from SF Symbols
+
 
 ---
 

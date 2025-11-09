@@ -24,20 +24,33 @@ struct ContentView: View {
     private var hasCompletedOnboarding: Bool {
         settings.first?.hasCompletedOnboarding ?? false
     }
-    private var totalSpent:Decimal {
-        expenses.reduce(0){
-            $0+$1.amount
-        }
-    }
-    
-    
-    private var startingBalance: Decimal {
-        settings.first?.startingBalance ?? 10000
-    }
-    
-    private var currentBalance: Decimal {
-        startingBalance - totalSpent
-    }
+    private var totalIncome: Decimal {
+          expenses.filter { $0.transactionType == .income }.reduce(0) {
+              $0 + $1.amount
+          }
+      }
+
+      // Calculate total expenses from all expense transactions
+      private var totalExpenses: Decimal {
+          expenses.filter { $0.transactionType == .expense }.reduce(0) {
+              $0 + $1.amount
+          }
+      }
+
+      // For backward compatibility (same as totalExpenses)
+      private var totalSpent: Decimal {
+          totalExpenses
+      }
+
+      private var startingBalance: Decimal {
+          settings.first?.startingBalance ?? 10000
+      }
+
+      // New balance calculation: starting + income - expenses
+      private var currentBalance: Decimal {
+          startingBalance + totalIncome - totalExpenses
+      }
+
     
     @State private var showSettings = false
     @State private var showAddExpense = false
