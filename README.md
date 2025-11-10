@@ -89,6 +89,16 @@ ExpenseTrackerPro/
 - **OnboardingView**: Initial setup experience
 - **SettingsView**: Configuration and preferences
 
+### Screenshots
+
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 Pro - 2025-11-01 at 18 53 08" src="https://github.com/user-attachments/assets/ad945a32-a42a-469b-b1fd-ccaf70611abf" />
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 Pro - 2025-11-01 at 18 52 16" src="https://github.com/user-attachments/assets/30190d2c-d0c3-4b1f-ad45-086c58724423" />
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 Pro - 2025-11-01 at 18 51 43 #2" src="https://github.com/user-attachments/assets/8b88692c-bd0f-4284-bbb8-aadbad95f40b" />
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 Pro - 2025-11-01 at 18 51 43" src="https://github.com/user-attachments/assets/3c182151-270f-482e-990b-027fefb54601" />
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 Pro - 2025-11-01 at 18 53 35" src="https://github.com/user-attachments/assets/d9f3cd50-06ba-4f6e-ab03-ac97b6c5e7d1" />
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 Pro - 2025-11-01 at 18 53 26" src="https://github.com/user-attachments/assets/a53b9313-1bca-4287-8ee8-92cc0dcb1095" />
+<img width="1206" height="2622" alt="Simulator Screenshot - iPhone 17 Pro - 2025-11-01 at 18 53 20" src="https://github.com/user-attachments/assets/dcaa7e73-637a-46a8-8792-84de9e17b189" />
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
@@ -113,7 +123,7 @@ Project Link: https://github.com/shalinth-adith/ExpenseTrackerPro
 
 - Built with SwiftUI and SwiftData
 - Inspired by modern personal finance apps
-
+- Icons from SF Symbols
 
 ---
 
