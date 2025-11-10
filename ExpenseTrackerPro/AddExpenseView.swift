@@ -13,12 +13,14 @@ struct AddExpenseView: View {
     @State private var selectedCategory: Category = .Food
       @State private var date: Date = Date()
       @State private var notes: String = ""
+    @State private var customCategoryName: String = ""
     @State private var showingAlert = false
       @State private var alertTitle = ""
       @State private var alertMessage = ""
     
     @Environment(\.modelContext)private var modelContext
-    @Environment(\.dismiss) private var dismiss
+      @Environment(\.dismiss) private var dismiss
+      @Query private var customCategories: [CustomCategory]
     
     private func showAlert(title: String, message: String) {
           alertTitle = title
@@ -45,14 +47,27 @@ struct AddExpenseView: View {
                                  .keyboardType(.decimalPad)
                          }
                      }
+                Section(header: Text("Category")) {
+                     Picker("Category", selection: $selectedCategory) {
+                         ForEach(Category.allCases, id: \.self) { category in
+                             Text(category.rawValue).tag(category)
+                         }
 
-                     Section(header: Text("Category")) {
-                         Picker("Category", selection: $selectedCategory) {
-                             ForEach(Category.allCases, id: \.self) { category in
-                                 Text(category.rawValue).tag(category)
-                             }
+                         // Show active custom categories
+                         ForEach(customCategories.filter { $0.isActive }, id: \.id) { custom in
+                             Text(custom.name).tag(Category.Other)
                          }
                      }
+                 }
+
+                 // Custom category input (when Other is selected)
+                 if selectedCategory == .Other {
+                     Section(header: Text("Custom Category Name")) {
+                         TextField("e.g., Gym, Entertainment", text: $customCategoryName)
+                             .autocapitalization(.words)
+                     }
+                 }
+
 
                      Section(header: Text("Date")) {
                          DatePicker("Date", selection: $date)
@@ -97,16 +112,41 @@ struct AddExpenseView: View {
               return
           }
 
+          var categoryName = selectedCategory.rawValue
+
+          if selectedCategory == .Other && !customCategoryName.isEmpty {
+              categoryName = customCategoryName.trimmingCharacters(in: .whitespaces)
+
+              trackCustomCategory(name: categoryName)
+          }
+
           let newExpense = Expense(
               amount: amountDecimal,
-              category: selectedCategory.rawValue,
+              category: categoryName,
               date: date,
               notes: notes.isEmpty ? nil : notes,
-              type : transactionType
+              type: transactionType
           )
 
           modelContext.insert(newExpense)
           dismiss()
+      }
+
+      private func trackCustomCategory(name: String) {
+          let normalizedName = name.capitalized
+
+          if let existingCategory = customCategories.first(where: { $0.name.lowercased() ==
+      normalizedName.lowercased() }) {
+              existingCategory.usageCount += 1
+
+              if existingCategory.usageCount >= 4 && !existingCategory.isActive {
+                  existingCategory.isActive = true
+                  showAlert(title: "🎉 New Category Added!", message: "\"\(normalizedName)\" has been added to your categories!")
+              }
+          } else {
+              let newCategory = CustomCategory(name: normalizedName, usageCount: 1, isActive: false)
+              modelContext.insert(newCategory)
+          }
       }
 
 }

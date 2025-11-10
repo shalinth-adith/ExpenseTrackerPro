@@ -13,7 +13,7 @@ struct ExpenseTrackerProApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: [Expense.self,AppSettings.self])
+        .modelContainer(for: [Expense.self, AppSettings.self, CustomCategory.self])
 
     }
 

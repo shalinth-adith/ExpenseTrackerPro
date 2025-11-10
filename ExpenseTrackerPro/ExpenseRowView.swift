@@ -40,8 +40,7 @@ struct ExpenseRowView: View {
                             .padding(.vertical, 3)
                             .background(
                                 Capsule()
-                                    .fill(expense.transactionType == .income ? Color.green :
-Color.red)
+                                    .fill(expense.transactionType == .income ? Color.green :Color.red)
                             )
                     }
 
@@ -84,39 +83,54 @@ Color.red)
             .foregroundColor(categoryColor)
     }
 
-    // MARK: - Category Color
     private var categoryColor: Color {
-        switch expense.category {
-        case "Food":
-            return .orange
-        case "Transport":
-            return .blue
-        case "Shopping":
-            return .purple
-        case "Bills":
-            return .red
-        default:
-            return .gray
-        }
-    }
+          switch expense.category {
+          case "Food":
+              return .orange
+          case "Transport":
+              return .blue
+          case "Shopping":
+              return .purple
+          case "Bills":
+              return .red
+          case "Gym":
+              return .green
+          case "Entertainment":
+              return .pink
+          case "Health":
+              return .red
+          case "Education":
+              return .blue
+          default:
+              return .gray
+          }
+      }
 
-    // MARK: - Get Category Icon
+
     private func getCategoryIcon() -> String {
-        switch expense.category {
-        case "Food":
-            return "fork.knife"
-        case "Transport":
-            return "car.fill"
-        case "Shopping":
-            return "cart.fill"
-        case "Bills":
-            return "doc.text.fill"
-        default:
-            return "star.fill"
-        }
-    }
+          switch expense.category {
+          case "Food":
+              return "fork.knife"
+          case "Transport":
+              return "car.fill"
+          case "Shopping":
+              return "cart.fill"
+          case "Bills":
+              return "doc.text.fill"
+          case "Gym":
+              return "dumbbell.fill"
+          case "Entertainment":
+              return "popcorn.fill"
+          case "Health":
+              return "heart.fill"
+          case "Education":
+              return "book.fill"
+          default:
+              return "star.fill"
+          }
+      }
 
-    // MARK: - Format Date
+
     private func formatDate(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
@@ -124,7 +138,6 @@ Color.red)
         return formatter.string(from: date)
     }
 
-    // MARK: - Format Currency
     private func formatCurrency(_ amount: Decimal) -> String {
         let number = NSDecimalNumber(decimal: amount)
         let formatter = NumberFormatter()
@@ -137,7 +150,6 @@ Color.red)
 
 #Preview {
     VStack(spacing: 10) {
-        // Expense example
         ExpenseRowView(expense: Expense(
             amount: Decimal(500),
             category: "Food",
@@ -146,7 +158,6 @@ Color.red)
             type: .expense
         ))
 
-        // Income example
         ExpenseRowView(expense: Expense(
             amount: Decimal(50000),
             category: "Other",
